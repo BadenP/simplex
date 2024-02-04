@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk 
 import numpy as np
 from numpy.linalg import inv
+from simplex import simplex
 
 def obter_valores():
     num_variaveis = int(entrada_variaveis.get())
@@ -11,6 +12,7 @@ def obter_valores():
     valores_combobox = ["Maximizar", "Minimizar"]  # Substitua com os valores desejados
     combobox = ttk.Combobox(janela, values=valores_combobox)
     combobox.grid(row=3, column=1, columnspan=num_variaveis, padx=5, pady=10)
+    f.append(combobox)
     rotulo_objetivo = Label(janela, text=f"Função objetivo:")
     rotulo_objetivo.grid(row=4, column=0, padx=5, pady=10)
     
@@ -50,6 +52,7 @@ def obter_valores():
         operadores_combobox = [">=", "<=", "="]  # Substitua com os valores desejados
         combobox2 = ttk.Combobox(janela, values=operadores_combobox, width=3)
         combobox2.grid(row=5+r, column=count, padx=10, pady=10)
+        op.append(combobox2)
         
         entrada_valor2 = Entry(janela, width=5)
         entrada_valor2.grid(row=5+r, column=count+2, padx=5, pady=10)
@@ -70,12 +73,9 @@ def obter_valores():
     botao_resolver = Button(janela, text="Resolver", command=gerarResultado)
     botao_resolver.grid(row=5+r+2, column=0, columnspan=2, pady=10)
 
-def geraNormaPadrao(tipo,A,operadores,c):
-    print("AAA")
-
 def gerarResultado():
     # Coletar valores das entradas da função objetivo
-    valores_objetivo = [float(element.get()) for element in entradas_variaveis_objetivo]
+    valores_objetivo = np.array([float(element.get()) for element in entradas_variaveis_objetivo])
 
     # Coletar valores das entradas das restrições
     valores_restricoes = [float(element.get()) for element in entradas_variaveis_restricoes]
@@ -88,95 +88,17 @@ def gerarResultado():
     # Coletar valores das entradas do vetor b
     vetor_b = np.array([float(element.get()) for element in entradas_variaveis_b])
 
-    # Imprimir as matrizes
-    print("Matriz A:")
-    print(matriz_A)
+    # # Imprimir as matrizes
+    # print("Matriz A:")
+    # print(matriz_A)
 
-    print("\nVetor b:")
-    print(vetor_b)
+    # print("\nVetor b:")
+    # print(vetor_b)
 
-    print("\nVetor c (Função Objetivo):")
-    print(valores_objetivo)
-
-    simplex(matriz_A, valores_objetivo, vetor_b, num_variaveis-2, num_restricoes)
-
-
-def simplex(A,c,b,n,m):
-    base = []
-    n_base = []
-
-    for i in range (n):
-        n_base.append(i)
-
-    for i in range(m):
-        base.append(i+n)
-
-    print("nao base = ", n_base)
-    print("base = ", base)
-
-    controle = True
-    iteracao = 0
-    while controle:
-        iteracao += 1
-        base_matrix = A[:, base]
-        print("Base:\n", base_matrix)
-        inversa = inv(base_matrix)
-        print("inversa:\n", inversa)
-        cbt = np.array(c)[base]
-        cnt = np.array(c)[n_base]
-
-        # Solução básica
-        solucao_basica = inversa @ b
-
-        # Lambda
-        lambdat =  cbt @ inversa 
-
-        # cnj
-        cnj = cnt - (lambdat @ A[:, n_base])
-        print("cnt : ",cnt)
-        print("cbt : ",cbt)
-        print("lambdat : ",lambdat)
-        print("anj : ",A[:, n_base])
-
-        # Cnk
-        cnk = min(cnj)
-        k = np.argmin(cnj)
-        print("cnj : ", cnj)
-        print("k : ", k)
-        print("cnk: ", cnk)
-
-        if cnk >= 0:
-            print("Solução ótima encontrada.")
-            print("Solução:", solucao_basica)
-            break  # Exit the loop if optimal solution is reached
-        else:
-            y = inversa @ A[:, k]
-            if any(y < 0):
-                print("Pare. Soluções ilimitadas.")
-                break 
-            else:
-                e = []
-                for i in range(len(solucao_basica)):
-                    if y[i] == 0:
-                        elemento = float('inf')
-                    else:
-                        elemento = solucao_basica[i] / y[i]
-
-                    e.append(elemento)
-
-                sai_base = min(e)
-                print("sai_base:", sai_base)
-
-                indice = e.index(sai_base)
-                print("indice =", indice)
-                entra_nao_base = base[indice]
-                print("entra na nao_base = ", entra_nao_base)
-                n_base[k] = entra_nao_base
-                print("nao base =", [element + 1 for element in n_base])
-                
-                base[indice] = k
-                print("base atualizada: ", [element + 1 for element in base])
-
+    # print("\nVetor c (Função Objetivo):")
+    # print(valores_objetivo)
+    o = [element.get() for element in op]
+    simplex(f[0].get(), valores_objetivo, matriz_A, o, vetor_b, num_variaveis, num_restricoes)
 
 
 # Criar a janela
@@ -204,6 +126,8 @@ botao_obter_valores.grid(row=2, column=0, columnspan=2, pady=10)
 entradas_variaveis_objetivo = []
 entradas_variaveis_restricoes = []
 entradas_variaveis_b = []
+f = []
+op = []
 
 # Iniciar a interface gráfica
 janela.mainloop()
