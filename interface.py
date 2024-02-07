@@ -34,7 +34,7 @@ class SimplexSolver(QWidget):
         layout.addLayout(self.dynamic_input_layout)
 
         self.setLayout(layout)
-        self.setWindowTitle('Entrada de Valores')
+        self.setWindowTitle('Simplex')
         self.show()
     
     def clear_dynamic_input_widgets(self):
@@ -121,7 +121,7 @@ class SimplexSolver(QWidget):
 
         resolver_button = QPushButton("Resolver")
         resolver_button.clicked.connect(lambda: self.resolve_problem())
-        self.dynamic_input_layout.addWidget(resolver_button, 3 + num_restricoes, 0, 1, 2)
+        self.dynamic_input_layout.addWidget(resolver_button, 3 + num_restricoes, num_restricoes, 1, 2)
         self.f_combobox = combobox
         self.entradas_objetivo = entradas_objetivo
         self.entradas_restricoes = entradas_restricoes
