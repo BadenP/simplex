@@ -2,11 +2,12 @@ import numpy as np
 from numpy.linalg import inv
 from forma_padrao import conversor
 
+# Algoritmo do Simplex
 def simplex(f,c,A,o,b,n,m):
 
     # Conversão para a norma padrão 
-    c = conversor(f,c,A,o)[0]
-    A = conversor(f,c,A,o)[1]
+    c = conversor(f,c,A,o,b)[0]
+    A = conversor(f,c,A,o,b)[1]
     print("Vetor c na forma padrão: ",c)
     print("Matriz A na forma padrão: ", A)
 
@@ -58,13 +59,15 @@ def simplex(f,c,A,o,b,n,m):
 
         # Cnk: elemento mínimo de cnj
         cnk = min(cnj)
-        # índice do cnk
+
+        # Índice do cnk
         k = np.argmin(cnj)
+        # Definição de qual é o índice (que está em N) que vai entrar na base
         indice_entra_base = n_base[k]
         print("Cnj : ", cnj)
         print("cnk: ", cnk)
         print("índice k : ", k)
-        print("índice q entra na base: ", indice_entra_base)
+        print("índice que entra na base: ", indice_entra_base)
 
         if cnk >= 0:
             soma = 0
@@ -120,44 +123,38 @@ def simplex(f,c,A,o,b,n,m):
                 base[indice] = indice_entra_base
                 print("Base atualizada: ", [element + 1 for element in base])
 
-
+# Casos de teste 
+                
 def teste1():
     n = 2
     m = 2
 
-    # Matriz A
-    A = np.array([
-                [9, 1],
-                [3, 1]])
+    A = np.array([[9, 1],[3, 1]])
 
-    # Vetor c
     c = np.array([4, 1])
 
-    # Vetor b
     b = np.array([18,12])
     o = ["<=","<="]
-    simplex("Maximizar",c,A,o,b,n,m)[0] == np.array([1,9])
-
+    resultado = simplex("Maximizar", c, A, o, b, n, m)[0]
+    resultado_arredondado = np.round(resultado, 2)
+    esperado_arredondado = np.array([1,9])
+    assert np.array_equal(resultado_arredondado, esperado_arredondado)
 
 def teste2():
     n = 2
     m = 2
 
-    # Matriz A
-    A = np.array([
-                [1, -1, 1, 0.0],
-                [2, 1, 0, -1]])
+    A = np.array([[1, -1],[2, 1]])
 
-    # Vetor c
-    c = np.array([-2, -1, 0, 0])
-
-    # Vetor b
+    c = np.array([2,-1])
     b = np.array([1,6])
-    o = [">=",">="]
-    simplex("Maximizar",c,A,o,b,n,m)
+    o = ["<=",">="]
+    resultado = simplex("Maximizar", c, A, o, b, n, m)[0]
+    resultado_arredondado = np.round(resultado, 2)
+    esperado_arredondado = np.array([1, -4])
+    assert np.array_equal(resultado_arredondado, esperado_arredondado)
+    assert simplex("Maximizar", c, A, o, b, n, m)[1] == "O problema não tem solução, problema ilimitado."
 
-
-# Teste 1
 def teste3():
     n = 2
     m = 4
@@ -172,7 +169,63 @@ def teste3():
     b = np.array([1200, 2400, 800, 450])
     o = ["<=", "<=", "<=", "<="]
 
-    # Adicionando asserts
-    simplex("Maximizar", c, A, o, b, n, m)
+    resultado = simplex("Maximizar", c, A, o, b, n, m)[0]
+    resultado_arredondado = np.round(resultado, 2)
+    esperado_arredondado = np.array([240, 210, 80, 480])
+    assert np.array_equal(resultado_arredondado, esperado_arredondado)
 
+def teste4():
+    n = 2
+    m = 3
+
+    A = np.array([
+        [3, 2],
+        [1, 0],
+        [0, 2]])
+    
+    c = np.array([3,5])
+    b = np.array([18,4,12])
+    o = ["<=", "<=", "<="]
+    resultado = simplex("Maximizar", c, A, o, b, n, m)[0]
+    assert np.array_equal(resultado,np.array([2,2,6]))
+
+def teste5():
+    n = 2
+    m = 3
+
+    A = np.array([
+        [1, 1],
+        [1, -1],
+        [-1, 1]])
+    
+    c = np.array([1,-2])
+    b = np.array([6,4,4])
+    o = ["<=", "<=", "<="]
+    resultado = simplex("min", c, A, o, b, n, m)[0]
+    resultado_arredondado = np.round(resultado, 2)
+    esperado_arredondado = np.array([1,8,5])
+    assert np.array_equal(resultado_arredondado,esperado_arredondado)
+
+def teste6():
+    n = 3
+    m = 3
+
+    A = np.array([
+        [1, 1, 2],
+        [1, 1, -1],
+        [-1, 1, 1]])
+    
+    c = np.array([1,1,-4])
+    b = np.array([9,2,4])
+    o = ["<=", "<=", "<="]
+    resultado = simplex("min", c, A, o, b, n, m)[0]
+    resultado_arredondado = np.round(resultado, 2)
+    esperado_arredondado = np.array([0.33,6,4.33])
+    assert np.array_equal(resultado_arredondado,esperado_arredondado)
+
+teste1()
+teste2()
 teste3()
+teste4()
+teste5()
+teste6()
