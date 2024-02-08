@@ -2,6 +2,8 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from simplex import simplex
+# Trabalho 1 - Modelagem e Otimização Algoritmica
+# Paula Fernandes Torres RA 123565
 
 class SimplexSolver(QWidget):
     def __init__(self):
