@@ -1,9 +1,3 @@
-Bibliotecas utilizadas:
-
-    PyQt5
-    NumPy
-    pytest
-
 Como importar as bibliotecas:
 
 1. PyQt5 (utilizado para criar a interface):
