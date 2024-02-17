@@ -123,7 +123,7 @@ def simplex(f,c,A,o,b,n,m):
                 base[indice] = indice_entra_base
                 print("Base atualizada: ", [element + 1 for element in base])
 
-# Casos de teste 
+# Casos de teste, cada teste é um problema de PL  
                 
 def teste1():
     n = 2
@@ -223,6 +223,7 @@ def teste6():
     esperado_arredondado = np.array([0.33,6,4.33])
     assert np.array_equal(resultado_arredondado,esperado_arredondado)
 
+# Chamadas para testar os problemas 
 teste1()
 teste2()
 teste3()

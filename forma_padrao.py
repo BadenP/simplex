@@ -30,7 +30,8 @@ def conversor(funcao, funcao_objetivo, restricoes, operadores, b):
 
     return funcao_objetivo,restricoes
 
-# Casos de teste
+# Casos de teste, cada teste é um problema de PL
+
 def teste1():
     n = 2
     m = 2
@@ -139,6 +140,7 @@ def teste6():
     assert np.array_equal(resultado_esperado_restricoes, resultado_restricoes)
     assert np.array_equal(resultado_esperado_fobj, resultado_fobj) 
 
+# Chamadas para testar os problemas 
 teste1()
 teste2()
 teste3()
